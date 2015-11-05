@@ -1,5 +1,5 @@
 def is_correct_input(num_list):
-	return len(num_list) != 0 and isnumeric(str(num_list))
+	return len(num_list) != 0 and ''.join(map(str, num_list)).isnumeric()
 
 def generate_random_num_list(length):
 	import random
@@ -7,8 +7,15 @@ def generate_random_num_list(length):
 	i = 0
 	while i < length:
 		num_list.append(random.randrange(2 * length))
-		i -= 1
+		i += 1
+	print('input ', num_list)
 	return num_list
+
+def validate_output(num_list):
+	for pos in range(1, len(num_list)):
+		if num_list[pos - 1] > num_list[pos]:
+			return False
+	return True
 
 def bubblesort(num_list):
 	if not is_correct_input(num_list):
@@ -41,7 +48,7 @@ def selectionsort(num_list):
 		num_list[min_pos] = temp
 
 	return num_list
-def insertion_sort(num_list):
+def insertionsort(num_list):
 	if not is_correct_input(num_list):
 		print('incorrect input')
 		return
@@ -49,7 +56,7 @@ def insertion_sort(num_list):
 	for pos in range(1, len(num_list)):
 		to_be_inserted = num_list[pos]
 		for pos_ in range(pos):
-			if num_list[pos_] > num_pos[pos]:
+			if num_list[pos_] > num_list[pos]:
 				cur_pos = pos
 				while cur_pos > pos_:
 					num_list[cur_pos] = num_list[cur_pos - 1]
@@ -76,26 +83,30 @@ def shellsort(num_list):
 						cur_pos -= step
 					num_list[pos_] = to_be_inserted
 		step //= 2
+	
+	return num_list
 
 def merge(l_list, r_list):
 	m_list = []
 	l_pos = 0
 	r_pos = 0
-	while l_pos < len(l_list) and r_pos < len(r_pos):
+	while l_pos < len(l_list) and r_pos < len(r_list):
 		if l_list[l_pos] <= r_list[r_pos]:
 			m_list.append(l_list[l_pos])
-			l_list += 1
+			l_pos += 1
 		else:
 			m_list.append(r_list[r_pos])
-			r_list += 1
+			r_pos += 1
 
-	if l_pos != len(l_list):
+	while l_pos != len(l_list):
 		m_list.append(l_list[l_pos])
-		l_list += 1
+		l_pos += 1
 
-	if r_pos != len(r_list):
+	while r_pos != len(r_list):
 		m_list.append(r_list[r_pos])
-		r_list += 1
+		r_pos += 1
+
+	return m_list
 		
 def mergesort(num_list):
 	if not is_correct_input(num_list):
@@ -103,31 +114,102 @@ def mergesort(num_list):
 		return
 
 	def mergesort_(num_list):
-		if len(num_list) < 1:
+		if len(num_list) <= 1:
 			return num_list
 		else:
 			return merge(mergesort_(num_list[:len(num_list)//2]),
        mergesort_(num_list[len(num_list)//2:]))
 
-	mergesort_(num_list)
+	return mergesort_(num_list)
 
-def lomuto_partiton(num_list, low, high):
-	pivot = num_list[high]
+def lomuto_partition(num_list, low, high):
+	pivot =  num_list[high]
 	pivot_pos = low
 	for pos in range(low, high):
 		if num_list[pos] <= pivot:
 			temp = num_list[pivot_pos]
 			num_list[pivot_pos] = num_list[pos]
+			num_list[pos] = temp
 			pivot_pos += 1
 	num_list[high] = num_list[pivot_pos]
 	num_list[pivot_pos] = pivot
-	return (num_list, pivot_pos)
-
+	return pivot_pos
 
 def hoare_partition(num_list, low, high):
-	pivot = num_list[high//2]
-	#pivot = num_list[high]
-	#pivot = num_list[low]
+	pivot = num_list[high]
 	left_pos = low
-	right_pos = high
+	right_pos = high - 1
 
+	while True:
+		while num_list[left_pos] <= pivot and left_pos <= right_pos:
+			left_pos += 1
+		while num_list[right_pos] >= pivot and left_pos <= right_pos:
+			right_pos -= 1
+
+		if left_pos > right_pos:
+			break
+		
+		temp = num_list[left_pos]
+		num_list[left_pos] = num_list[right_pos]
+		num_list[right_pos] = temp
+
+	num_list[high] = num_list[left_pos]
+	num_list[left_pos] = pivot
+	return left_pos 
+
+# in place sorting (pass by value reference)
+def quicksort(num_list):
+	if not is_correct_input(num_list):
+		print('incorrect input')
+		return
+
+	def quicksort_helper(num_list, low, high):
+		if low >= high:
+			return
+
+		split_point = hoare_partition(num_list, low, high)
+		quicksort_helper(num_list, low, split_point - 1)
+		quicksort_helper(num_list, split_point + 1, high)
+
+	quicksort_helper(num_list, 0, len(num_list) - 1)
+	
+	return num_list
+
+
+if __name__ == '__main__':
+	length = 5
+	print('\n\tbubblesort')
+	num_list = generate_random_num_list(length)
+	output = bubblesort(num_list)
+	print('output', output)
+	print(validate_output(output))
+
+	print('\n\tselectionsort')
+	num_list = generate_random_num_list(length)
+	output = selectionsort(num_list)
+	print('output', output)
+	print(validate_output(output))
+
+	print('\n\tinsertionsort')
+	num_list = generate_random_num_list(length)
+	output = insertionsort(num_list)
+	print('output', output)
+	print(validate_output(output))
+
+	print('\n\tshellsort')
+	num_list = generate_random_num_list(length)
+	output = shellsort(num_list)
+	print('output', output)
+	print(validate_output(output))
+
+	print('\n\tmergesort')
+	num_list = generate_random_num_list(length)
+	output = mergesort(num_list)
+	print('output', output)
+	print(validate_output(output))
+
+	print('\n\tquicksort')
+	num_list = generate_random_num_list(length)
+	output = quicksort(num_list)
+	print('output', output)
+	print(validate_output(output))
