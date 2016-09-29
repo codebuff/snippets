@@ -1,4 +1,4 @@
-from snippets.graphs.priority_queue import PriorityQueue
+from graphs.priority_queue import PriorityQueue
 
 
 def prim(graph, start_vtx_id):

@@ -1,6 +1,6 @@
-from snippets.trees.BinarySearchTree import BinarySearchTree
-from snippets.trees import Utilities
-from utilities import nonstd
+from trees.BinarySearchTree import BinarySearchTree
+from trees import Utilities
+from utils import nonstd
 
 #nonstdio = nonstd.IO(in_file="bst.in", out_file="bst.out")
 nonstdio = nonstd.In(in_file="bst.in")

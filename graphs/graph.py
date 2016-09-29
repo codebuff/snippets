@@ -1,5 +1,5 @@
-from snippets.graphs.vertex import Vertex
-from snippets.graphs.utilities import Color
+from graphs.vertex import Vertex
+from graphs.utilities import Color
 
 
 class Graph:

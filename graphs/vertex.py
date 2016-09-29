@@ -1,4 +1,4 @@
-from snippets.graphs.utilities import Color
+from graphs.utilities import Color
 
 
 class Vertex:

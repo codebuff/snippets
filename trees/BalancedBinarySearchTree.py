@@ -1,4 +1,4 @@
-from snippets.trees.node import Node
+from trees.node import Node
 
 
 class BinarySearchTree:
